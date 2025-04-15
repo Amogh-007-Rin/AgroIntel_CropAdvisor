@@ -447,7 +447,17 @@ try:
                     color='Importance',
                     color_continuous_scale='Viridis'
                 )
-                fig.update_layout(height=400)
+                # Improve y-axis spacing for better readability
+                fig.update_layout(
+                    height=400,
+                    margin=dict(l=150, r=40, t=80, b=40),
+                    yaxis=dict(
+                        tickfont=dict(size=12),
+                        tickmode='array',
+                        tickvals=list(range(len(importance_df))),
+                        ticktext=importance_df['Feature']
+                    )
+                )
                 st.plotly_chart(fig, use_container_width=True)
             
         with col2:
@@ -654,7 +664,17 @@ try:
                         color='Importance',
                         color_continuous_scale='Viridis'
                     )
-                    fig.update_layout(height=400)
+                    # Improve y-axis spacing for better readability
+                    fig.update_layout(
+                        height=400,
+                        margin=dict(l=150, r=40, t=80, b=40),
+                        yaxis=dict(
+                            tickfont=dict(size=12),
+                            tickmode='array',
+                            tickvals=list(range(len(importance_df))),
+                            ticktext=importance_df['Feature']
+                        )
+                    )
                     st.plotly_chart(fig)
 
 # Add Feature Engineering page
@@ -799,7 +819,17 @@ try:
                     color='Importance',
                     color_continuous_scale='plasma'
                 )
-                fig.update_layout(height=500)
+                # Improve y-axis spacing for better readability
+                fig.update_layout(
+                    height=500,
+                    margin=dict(l=180, r=40, t=80, b=40),
+                    yaxis=dict(
+                        tickfont=dict(size=12),
+                        tickmode='array',
+                        tickvals=list(range(len(importance_poly_df))),
+                        ticktext=importance_poly_df['Feature']
+                    )
+                )
                 st.plotly_chart(fig, use_container_width=True)
         
         # Tab 2: Feature Ratios
@@ -1158,7 +1188,17 @@ try:
                     color_continuous_scale='viridis',
                     title=f"Feature Importance Using {selection_method}"
                 )
-                fig.update_layout(height=500)
+                # Improve y-axis spacing for better readability
+                fig.update_layout(
+                    height=500,
+                    margin=dict(l=150, r=40, t=80, b=40),
+                    yaxis=dict(
+                        tickfont=dict(size=12),
+                        tickmode='array',
+                        tickvals=list(range(len(importance_df.head(min(10, X.shape[1]))))),
+                        ticktext=importance_df.head(min(10, X.shape[1]))['Feature']
+                    )
+                )
                 st.plotly_chart(fig, use_container_width=True)
                 
                 # Compare model performance with selected vs all features
