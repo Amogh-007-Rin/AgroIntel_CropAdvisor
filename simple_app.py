@@ -993,7 +993,19 @@ try:
                         color='Explained Variance (%)',
                         color_continuous_scale='plasma'
                     )
-                    fig.update_layout(height=400)
+                    # Improve spacing for better readability
+                    fig.update_layout(
+                        height=400,
+                        margin=dict(l=100, r=40, t=80, b=60),
+                        yaxis=dict(
+                            tickfont=dict(size=12),
+                            title_font=dict(size=14)
+                        ),
+                        xaxis=dict(
+                            tickfont=dict(size=12),
+                            title_font=dict(size=14)
+                        )
+                    )
                     st.plotly_chart(fig, use_container_width=True)
                 
                 with col2:
@@ -1392,7 +1404,19 @@ try:
                     title="Crop Distribution Across Clusters (%)",
                     labels=dict(x="Crop Type", y="Cluster", color="Percentage")
                 )
-                fig.update_layout(height=500)
+                # Improve spacing for better readability
+                fig.update_layout(
+                    height=500,
+                    margin=dict(l=80, r=40, t=80, b=60),
+                    xaxis=dict(
+                        tickfont=dict(size=12),
+                        title_font=dict(size=14)
+                    ),
+                    yaxis=dict(
+                        tickfont=dict(size=12),
+                        title_font=dict(size=14)
+                    )
+                )
                 st.plotly_chart(fig, use_container_width=True)
                 
                 # 3D visualization of clusters
@@ -1453,11 +1477,16 @@ try:
                     polar=dict(
                         radialaxis=dict(
                             visible=True,
-                            range=[0, cluster_profiles.values.max()]
+                            range=[0, cluster_profiles.values.max()],
+                            tickfont=dict(size=12)
+                        ),
+                        angularaxis=dict(
+                            tickfont=dict(size=12)
                         )
                     ),
                     title="Feature Profiles by Cluster",
-                    height=600
+                    height=600,
+                    margin=dict(l=70, r=70, t=80, b=70)
                 )
                 st.plotly_chart(fig, use_container_width=True)
         
@@ -1681,7 +1710,12 @@ try:
                         color='Cluster',
                         title="Parallel Coordinates Plot of Cluster Features"
                     )
-                    fig.update_layout(height=600)
+                    # Improve spacing and readability
+                    fig.update_layout(
+                        height=600,
+                        margin=dict(l=100, r=40, t=80, b=60),
+                        font=dict(size=12)
+                    )
                     st.plotly_chart(fig, use_container_width=True)
                     
                     # Create box plots for selected features
