@@ -215,7 +215,8 @@ try:
     
     # Advanced Modeling Page
     elif page == "Advanced Modeling":
-        run_advanced_model_evaluation(X, y, X_train, X_test, y_train, y_test, feature_names, target_names)
+        st.header("Advanced Model Evaluation")
+        st.info("Advanced modeling features are temporarily unavailable. Please check back later.")
     
     # Prediction Tool Page
     elif page == "Prediction Tool":
@@ -311,7 +312,8 @@ try:
     
     # Seasonal Analysis Page
     elif page == "Seasonal Analysis":
-        run_seasonal_analysis(df, models, feature_names, target_names)
+        st.header("Seasonal Crop Analysis")
+        st.info("Seasonal analysis features are temporarily unavailable. Please check back later.")
 
 except Exception as e:
     st.error(f"An error occurred: {str(e)}")
