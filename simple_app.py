@@ -312,7 +312,27 @@ try:
                 title="Distribution of Soil Nutrients by Crop Type",
                 labels={"value": "Nutrient Value (kg/ha)", "variable": "Nutrient Type"}
             )
-            fig.update_layout(height=600)
+            # Improve spacing for better readability of y-axis labels
+            fig.update_layout(
+                height=700,  # Increased height for better spacing
+                margin=dict(l=80, r=40, t=80, b=40),
+                yaxis=dict(
+                    tickfont=dict(size=10),
+                    title_font=dict(size=12)
+                )
+            )
+            # Set uniform y-axis range and spacing for all facets
+            for i in range(len(fig.layout.annotations)):
+                fig.update_yaxes(
+                    tickformat='.0%',  # Format as percentage without decimal places
+                    dtick=0.05,        # Set tick interval to 5%
+                    range=[0, 0.3],    # Set consistent y-axis range
+                    title_text="",     # Remove redundant titles
+                    tickfont=dict(size=10),
+                    row=((i) // 3) + 1, 
+                    col=((i) % 3) + 1
+                )
+            
             st.plotly_chart(fig, use_container_width=True)
         
         # Tab 2: Environmental Factors
@@ -326,7 +346,26 @@ try:
                 title="Distribution of Environmental Factors by Crop Type",
                 labels={"value": "Value", "variable": "Environmental Factor"}
             )
-            fig.update_layout(height=700)
+            # Improve spacing for better readability of y-axis labels
+            fig.update_layout(
+                height=800,  # Increased height for better spacing
+                margin=dict(l=80, r=40, t=80, b=40),
+                yaxis=dict(
+                    tickfont=dict(size=10),
+                    title_font=dict(size=12)
+                )
+            )
+            # Set uniform y-axis range and spacing for all facets
+            for i in range(len(fig.layout.annotations)):
+                fig.update_yaxes(
+                    tickformat='.0%',  # Format as percentage without decimal places
+                    dtick=0.05,        # Set tick interval to 5%
+                    range=[0, 0.3],    # Set consistent y-axis range
+                    title_text="",     # Remove redundant titles
+                    tickfont=dict(size=10),
+                    row=((i) // 2) + 1,  # Different layout from the first tab
+                    col=((i) % 2) + 1
+                )
             st.plotly_chart(fig, use_container_width=True)
         
         st.subheader("Correlation Between Features")
