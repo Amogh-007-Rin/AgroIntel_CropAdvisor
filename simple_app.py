@@ -266,6 +266,19 @@ try:
                 title='Distribution of Crop Types in Dataset',
                 labels={'Count': 'Number of Samples', 'Crop': 'Crop Type'}
             )
+            # Improve spacing for better readability
+            fig.update_layout(
+                margin=dict(l=80, r=40, t=80, b=120),
+                xaxis=dict(
+                    tickfont=dict(size=12),
+                    title_font=dict(size=14),
+                    tickangle=45  # Angled labels to prevent overlap
+                ),
+                yaxis=dict(
+                    tickfont=dict(size=12),
+                    title_font=dict(size=14)
+                )
+            )
             st.plotly_chart(fig, use_container_width=True)
             
             st.subheader("Features")
@@ -330,7 +343,19 @@ try:
             color_continuous_scale='RdBu_r',
             title="Feature Correlation Heatmap"
         )
-        fig.update_layout(height=500)
+        # Improve spacing for better readability
+        fig.update_layout(
+            height=500,
+            margin=dict(l=80, r=40, t=80, b=80),
+            xaxis=dict(
+                tickfont=dict(size=12),
+                title_font=dict(size=14)
+            ),
+            yaxis=dict(
+                tickfont=dict(size=12),
+                title_font=dict(size=14)
+            )
+        )
         st.plotly_chart(fig, use_container_width=True)
         
         st.subheader("Soil Nutrient Analysis by Crop Type")
@@ -635,6 +660,20 @@ try:
                 
                 fig = px.bar(proba_df.head(5), x='Crop', y='Probability', color='Probability',
                             color_continuous_scale='Viridis', title='Top 5 Suitable Crops')
+                # Improve spacing for better readability
+                fig.update_layout(
+                    height=400,
+                    margin=dict(l=80, r=40, t=80, b=120),
+                    xaxis=dict(
+                        tickfont=dict(size=12),
+                        title_font=dict(size=14),
+                        tickangle=45  # Angled labels to prevent overlap
+                    ),
+                    yaxis=dict(
+                        tickfont=dict(size=12),
+                        title_font=dict(size=14)
+                    )
+                )
                 st.plotly_chart(fig)
                 
                 # If Random Forest, show feature importance
@@ -1762,7 +1801,20 @@ try:
                     title="Cluster Feature Profiles (Relative to Overall Mean)",
                     labels=dict(x="Feature", y="Cluster", color="Relative Difference")
                 )
-                fig.update_layout(height=500)
+                # Improve spacing for better readability
+                fig.update_layout(
+                    height=500,
+                    margin=dict(l=80, r=40, t=80, b=80),
+                    xaxis=dict(
+                        tickfont=dict(size=12),
+                        title_font=dict(size=14),
+                        tickangle=45  # Angled labels to prevent overlap
+                    ),
+                    yaxis=dict(
+                        tickfont=dict(size=12),
+                        title_font=dict(size=14)
+                    )
+                )
                 st.plotly_chart(fig, use_container_width=True)
                 
                 # Cluster summaries in natural language
@@ -1986,7 +2038,19 @@ try:
                     title="Model Prediction Agreement",
                     labels=dict(x="Model", y="Model", color="Agreement Rate")
                 )
-                fig.update_layout(height=500)
+                # Improve spacing for better readability
+                fig.update_layout(
+                    height=500,
+                    margin=dict(l=80, r=40, t=80, b=80),
+                    xaxis=dict(
+                        tickfont=dict(size=12),
+                        title_font=dict(size=14)
+                    ),
+                    yaxis=dict(
+                        tickfont=dict(size=12),
+                        title_font=dict(size=14)
+                    )
+                )
                 st.plotly_chart(fig, use_container_width=True)
         
         # Tab 2: Confusion Matrix Analysis
@@ -2040,7 +2104,21 @@ try:
                     title=f"Normalized Confusion Matrix - {confusion_model}",
                     labels=dict(x="Predicted Crop", y="True Crop", color="Percentage")
                 )
-                fig.update_layout(height=700, width=700)
+                # Improve spacing for better readability
+                fig.update_layout(
+                    height=700, 
+                    width=700,
+                    margin=dict(l=80, r=40, t=80, b=80),
+                    xaxis=dict(
+                        tickfont=dict(size=12),
+                        title_font=dict(size=14),
+                        tickangle=45  # Angled labels to prevent overlap
+                    ),
+                    yaxis=dict(
+                        tickfont=dict(size=12),
+                        title_font=dict(size=14)
+                    )
+                )
                 st.plotly_chart(fig, use_container_width=True)
                 
                 # Identify most confused pairs
@@ -2133,15 +2211,24 @@ try:
                         name=pred_crop
                     ))
                     
+                    # Improve spacing and readability
                     fig.update_layout(
                         polar=dict(
                             radialaxis=dict(
                                 visible=True,
-                                range=[0, 1]
+                                range=[0, 1],
+                                tickfont=dict(size=12)
+                            ),
+                            angularaxis=dict(
+                                tickfont=dict(size=12)
                             )
                         ),
                         title=f"Normalized Feature Comparison: {true_crop} vs {pred_crop}",
-                        height=600
+                        height=600,
+                        margin=dict(l=80, r=80, t=80, b=80),  # Increased margins for better spacing
+                        legend=dict(
+                            font=dict(size=12)
+                        )
                     )
                     st.plotly_chart(fig, use_container_width=True)
         
