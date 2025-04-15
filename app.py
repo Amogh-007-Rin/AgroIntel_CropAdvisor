@@ -28,6 +28,23 @@ from utils import (
     display_metrics,
     interpret_prediction
 )
+from feature_engineering import (
+    create_polynomial_features,
+    create_ratio_features,
+    create_interaction_features,
+    plot_feature_distributions_by_crop,
+    plot_pca_analysis,
+    plot_feature_selection_results
+)
+from clustering import (
+    run_clustering_analysis
+)
+from advanced_modeling import (
+    run_advanced_model_evaluation
+)
+from seasonal_analysis import (
+    run_seasonal_analysis
+)
 
 # Set page configuration
 st.set_page_config(
@@ -40,14 +57,14 @@ st.set_page_config(
 st.title("🌱 Crop Recommendation System")
 st.markdown("""
 This application analyzes soil and environmental conditions to recommend the optimal crop for your farm.
-Upload your data or use the interactive tool to get personalized recommendations.
+Use the interactive tools to explore data, evaluate models, and get personalized recommendations.
 """)
 
 # Sidebar
 st.sidebar.title("Navigation")
 page = st.sidebar.radio(
     "Go to",
-    ["Home", "Data Analysis", "Model Performance", "Prediction Tool"]
+    ["Home", "Data Analysis", "Advanced Analysis", "Model Performance", "Advanced Modeling", "Prediction Tool", "Seasonal Analysis"]
 )
 
 # Load and preprocess data
@@ -130,6 +147,112 @@ try:
             st.subheader("Feature Pairplot")
             plot_pairplot(df, feature_names, "label")
     
+    # Advanced Analysis Page
+    elif page == "Advanced Analysis":
+        st.header("Advanced Data Analysis")
+        
+        # Create tabs for different analyses
+        tabs = st.tabs([
+            "Feature Engineering", 
+            "Feature Distribution by Crop", 
+            "PCA Analysis",
+            "Feature Selection",
+            "Clustering Analysis"
+        ])
+        
+        # Tab 1: Feature Engineering
+        with tabs[0]:
+            st.subheader("Feature Engineering")
+            st.write("""
+            Feature engineering creates new features from existing ones to improve model performance.
+            Here we explore various feature transformations and their impact.
+            """)
+            
+            # Select feature engineering methods
+            methods = st.multiselect(
+                "Select feature engineering methods to apply:",
+                ["Polynomial Features", "Ratio Features", "Interaction Features"],
+                default=["Ratio Features"]
+            )
+            
+            # Apply selected methods
+            if "Polynomial Features" in methods:
+                degree = st.slider("Polynomial degree:", min_value=2, max_value=3, value=2)
+                X_poly, poly_features = create_polynomial_features(X, degree=degree)
+                
+                st.write(f"Created {len(poly_features)} polynomial features.")
+                st.write("Sample of polynomial features:")
+                st.dataframe(X_poly.head(5))
+            
+            if "Ratio Features" in methods:
+                X_ratio, ratio_features = create_ratio_features(X)
+                
+                st.write(f"Created {len(ratio_features)} ratio features.")
+                st.write("Sample of ratio features:")
+                st.dataframe(X_ratio[ratio_features].head(5))
+                
+                # Show correlation of ratio features with target
+                st.write("### Correlation of Ratio Features with Crop Types")
+                st.write("This analysis shows how strongly each ratio feature correlates with different crop types.")
+                
+                # Prepare data for correlation analysis
+                X_ratio_with_target = pd.concat([X_ratio[ratio_features], pd.get_dummies(y, prefix='crop')], axis=1)
+                
+                # Calculate correlations
+                ratio_corr = X_ratio_with_target.corr()
+                
+                # Select only correlations between ratio features and crop types
+                crop_cols = [col for col in ratio_corr.columns if col.startswith('crop_')]
+                ratio_crop_corr = ratio_corr.loc[ratio_features, crop_cols]
+                
+                # Plot heatmap
+                fig, ax = plt.subplots(figsize=(12, 8))
+                sns.heatmap(ratio_crop_corr, annot=True, cmap='coolwarm', ax=ax)
+                plt.title('Correlation between Ratio Features and Crop Types')
+                plt.tight_layout()
+                st.pyplot(fig)
+            
+            if "Interaction Features" in methods:
+                X_inter, interaction_features = create_interaction_features(X)
+                
+                st.write(f"Created {len(interaction_features)} interaction features.")
+                st.write("Sample of interaction features:")
+                st.dataframe(X_inter[interaction_features].head(5))
+        
+        # Tab 2: Feature Distribution by Crop
+        with tabs[1]:
+            st.subheader("Feature Distribution by Crop")
+            st.write("""
+            These visualizations show how feature distributions vary across different crops,
+            helping identify which features are most important for distinguishing each crop.
+            """)
+            
+            plot_feature_distributions_by_crop(df, feature_names, target_names)
+        
+        # Tab 3: PCA Analysis
+        with tabs[2]:
+            st.subheader("Principal Component Analysis (PCA)")
+            st.write("""
+            PCA reduces the dimensionality of the data while preserving as much variance as possible.
+            This helps visualize high-dimensional data and identify the most important underlying factors.
+            """)
+            
+            plot_pca_analysis(X, y, feature_names)
+        
+        # Tab 4: Feature Selection
+        with tabs[3]:
+            st.subheader("Feature Selection")
+            st.write("""
+            Feature selection identifies the most informative features for predicting crop suitability.
+            This helps create simpler, more interpretable models.
+            """)
+            
+            plot_feature_selection_results(X, y, feature_names)
+        
+        # Tab 5: Clustering Analysis
+        with tabs[4]:
+            run_clustering_analysis(X, y)
+    
     # Model Performance Page
     elif page == "Model Performance":
         st.header("Model Performance Analysis")
@@ -189,6 +312,10 @@ try:
                     random_state=42
                 )
                 """)
+    
+    # Advanced Modeling Page
+    elif page == "Advanced Modeling":
+        run_advanced_model_evaluation(X, y, X_train, X_test, y_train, y_test, feature_names, target_names)
     
     # Prediction Tool Page
     elif page == "Prediction Tool":
@@ -250,6 +377,41 @@ try:
             fig = px.bar(proba_df.head(5), x='Crop', y='Probability', color='Probability',
                         color_continuous_scale='Viridis', title='Top 5 Suitable Crops')
             st.plotly_chart(fig)
+            
+            # Calculate feature importance for this prediction
+            if model_choice == "Random Forest":
+                st.subheader("Feature Importance for This Prediction")
+                st.write("""
+                This chart shows how each factor influenced the prediction.
+                Higher values indicate more important features for this specific recommendation.
+                """)
+                
+                # Get feature importance from the model
+                model = models[model_choice]
+                importances = model.feature_importances_
+                
+                # Create a DataFrame for visualization
+                importance_df = pd.DataFrame({
+                    'Feature': feature_names,
+                    'Importance': importances
+                }).sort_values('Importance', ascending=False)
+                
+                # Plot feature importance
+                fig = px.bar(
+                    importance_df, 
+                    x='Importance', 
+                    y='Feature',
+                    orientation='h',
+                    title='Feature Importance for Crop Prediction',
+                    color='Importance',
+                    color_continuous_scale='Viridis'
+                )
+                fig.update_layout(height=400)
+                st.plotly_chart(fig)
+    
+    # Seasonal Analysis Page
+    elif page == "Seasonal Analysis":
+        run_seasonal_analysis(df, models, feature_names, target_names)
 
 except Exception as e:
     st.error(f"An error occurred: {str(e)}")
