@@ -2434,7 +2434,7 @@ try:
                 # Calculate learning curves
                 try:
                     train_sizes, train_scores, test_scores = learning_curve(
-                        model, X_scaled, y, train_sizes=train_sizes,
+                        model, StandardScaler().fit_transform(X), y, train_sizes=train_sizes,
                         cv=5, scoring='accuracy', n_jobs=-1, random_state=42
                     )
                     
@@ -2546,7 +2546,7 @@ try:
                     try:
                         # Calculate validation curves
                         train_scores, test_scores = validation_curve(
-                            model, X_scaled, y, param_name=param_name, param_range=param_range,
+                            model, StandardScaler().fit_transform(X), y, param_name=param_name, param_range=param_range,
                             cv=5, scoring='accuracy', n_jobs=-1
                         )
                         
