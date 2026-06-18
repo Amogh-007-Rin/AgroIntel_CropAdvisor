@@ -1,0 +1,9 @@
+services:
+  crop-advisor:
+    build: .
+    container_name: agrointel-crop-advisor
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./models:/app/models
+    restart: unless-stopped
