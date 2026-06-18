@@ -9,27 +9,27 @@ from sklearn.preprocessing import StandardScaler
 import joblib
 import os
 
-from data_preprocessing import load_and_preprocess_data
-from exploratory_analysis import (
-    plot_feature_distributions, 
-    plot_correlation_heatmap, 
+from src.data_preprocessing import load_and_preprocess_data
+from src.exploratory_analysis import (
+    plot_feature_distributions,
+    plot_correlation_heatmap,
     plot_pairplot,
     plot_crop_distribution,
     plot_feature_importance,
     plot_soil_nutrient_distribution
 )
-from modeling import (
+from src.modeling import (
     train_and_evaluate_models,
     predict_crop,
     feature_importance
 )
-from utils import (
+from src.utils import (
     get_model_metrics,
     display_metrics,
     interpret_prediction
 )
 # Temporarily comment out advanced modules to debug the application
-# from feature_engineering import (
+# from src.feature_engineering import (
 #     create_polynomial_features,
 #     create_ratio_features,
 #     create_interaction_features,
@@ -37,13 +37,13 @@ from utils import (
 #     plot_pca_analysis,
 #     plot_feature_selection_results
 # )
-# from clustering import (
+# from src.clustering import (
 #     run_clustering_analysis
 # )
-# from advanced_modeling import (
+# from src.advanced_modeling import (
 #     run_advanced_model_evaluation
 # )
-# from seasonal_analysis import (
+# from src.seasonal_analysis import (
 #     run_seasonal_analysis
 # )
 
@@ -71,30 +71,30 @@ page = st.sidebar.radio(
 # Load and preprocess data
 @st.cache_data
 def get_data():
-    return load_and_preprocess_data("attached_assets/Crop_recommendation.csv")
+    return load_and_preprocess_data("data/Crop_recommendation.csv")
 
 # Load data
 try:
     df, X, y, X_train, X_test, y_train, y_test, feature_names, target_names = get_data()
     
     # Check if models exist, if not train them
-    models_exist = os.path.exists("random_forest_model.joblib") and \
-                  os.path.exists("knn_model.joblib") and \
-                  os.path.exists("svm_model.joblib")
-    
+    models_exist = os.path.exists("models/random_forest_model.joblib") and \
+                  os.path.exists("models/knn_model.joblib") and \
+                  os.path.exists("models/svm_model.joblib")
+
     if not models_exist:
         with st.spinner("Training models for the first time..."):
             models, metrics = train_and_evaluate_models(X_train, y_train, X_test, y_test)
             # Save models
-            joblib.dump(models["Random Forest"], "random_forest_model.joblib")
-            joblib.dump(models["KNN"], "knn_model.joblib")
-            joblib.dump(models["SVM"], "svm_model.joblib")
+            joblib.dump(models["Random Forest"], "models/random_forest_model.joblib")
+            joblib.dump(models["KNN"], "models/knn_model.joblib")
+            joblib.dump(models["SVM"], "models/svm_model.joblib")
     else:
         # Load pre-trained models
         models = {
-            "Random Forest": joblib.load("random_forest_model.joblib"),
-            "KNN": joblib.load("knn_model.joblib"),
-            "SVM": joblib.load("svm_model.joblib")
+            "Random Forest": joblib.load("models/random_forest_model.joblib"),
+            "KNN": joblib.load("models/knn_model.joblib"),
+            "SVM": joblib.load("models/svm_model.joblib")
         }
         metrics = get_model_metrics(models, X_test, y_test)
     

@@ -179,7 +179,7 @@ animate_text()
 # Load data
 @st.cache_data
 def load_data():
-    df = pd.read_csv("attached_assets/Crop_recommendation.csv")
+    df = pd.read_csv("data/Crop_recommendation.csv")
     return df
 
 try:
@@ -2644,7 +2644,7 @@ except Exception as e:
     {str(e)}
     </div>
     <p style="font-family: 'Courier New', monospace; color: #e0e0e0; margin-top: 15px;">
-    Please make sure the data file "Crop_recommendation.csv" is present in the "attached_assets" directory.
+    Please make sure the data file "Crop_recommendation.csv" is present in the "data" directory.
     </p>
     </div>
     """, unsafe_allow_html=True)

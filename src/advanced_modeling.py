@@ -674,7 +674,7 @@ def run_advanced_model_evaluation(X, y, X_train, X_test, y_train, y_test, featur
     ])
     
     # Check if advanced models exist, otherwise train them
-    model_path = "advanced_models.joblib"
+    model_path = "models/advanced_models.joblib"
     
     try:
         advanced_models = joblib.load(model_path)
